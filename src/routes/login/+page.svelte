@@ -4,6 +4,8 @@
     import Button from "$lib/shared/Button.svelte";
     import {authClient} from "$lib/stores/firebase_store";
     import Form from "$lib/shared/Form.svelte";
+    import {browser} from "$app/environment";
+    import {goto} from "$app/navigation";
 
     let form;
 
@@ -33,6 +35,9 @@
 
         try {
             await $authClient.signIn(formData.email, formData.password);
+            if (browser) {
+                await goto("/");
+            }
         } catch (error) {
             if (error.code === 'auth/wrong-password') {
                 $form.errors["password"] = 'Invalid password';

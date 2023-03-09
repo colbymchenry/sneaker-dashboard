@@ -1,6 +1,7 @@
 import {type Writable, writable} from 'svelte/store';
 import { getAuth, onAuthStateChanged, type UserCredential, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import {browser} from "$app/environment";
+import {goto} from "$app/navigation";
 
 export interface User {
     uid: string;
@@ -40,6 +41,9 @@ export class Auth {
                 }
             } else {
                 this.setUser(null);
+                if (browser) {
+                    goto("/login");
+                }
             }
         });
     }
