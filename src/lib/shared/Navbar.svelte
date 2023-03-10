@@ -31,7 +31,7 @@
     }
 </script>
 
-<button on:click|preventDefault|stopPropagation={toggleNav}>Toggle Nav</button>
+<button on:click|preventDefault|stopPropagation={toggleNav} class="fixed top-4 left-4 z-50 bg-indigo-500 hover:bg-indigo-600 text-white rounded-full p-2 flex items-center justify-center shadow-md"><span class="material-symbols-outlined">menu</span></button>
 
 <div class="navbar" class:navbar--open={open} class:navbar--closed={!open} transition:slide>
     <div class="navbar-header">
@@ -58,16 +58,11 @@
 
 <style>
     .navbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: 300px;
+        @apply fixed top-0 left-0 bottom-0 w-[300px] text-white overflow-y-auto;
         background-color: #1a1a1d;
-        color: #ffffff;
-        overflow-y: auto;
         transition: transform 0.2s ease-in-out;
-        z-index: 1;
+        z-index: 100;
+        box-shadow: 3px 2px 10px 1px rgb(0 0 0 / 25%);
     }
 
     .navbar--open {
