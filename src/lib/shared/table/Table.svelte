@@ -7,9 +7,10 @@
     export let columns: any[] = [];
     export let data: any[] = [];
     export let total: number;
+    export let className: string = '';
 </script>
 
-<table>
+<table class={className}>
     {#if $$slots.header}
         <slot name="header" {columns} />
     {:else}
@@ -42,3 +43,9 @@
         <TableFooter {total} />
     {/if}
 </table>
+
+<style lang="scss">
+    table {
+        border: 2px solid #cbd5e0;
+    }
+</style>

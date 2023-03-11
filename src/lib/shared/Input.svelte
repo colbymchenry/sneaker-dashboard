@@ -27,7 +27,7 @@
 
 <div class="flex flex-col">
     {#if label}
-        <label class="text-sm font-medium text-text mb-1">{label}{required ? ' *' : ''}</label>
+        <label class="text-sm font-medium text-text mb-2">{label}{required ? ' *' : ''}</label>
     {/if}
     <input use:setType class={classes} {placeholder} bind:value {disabled} {name} on:input on:change on:focus on:blur/>
     {#if error}
@@ -37,7 +37,7 @@
 
 <style lang="scss">
     input {
-      @apply border border-border rounded-md px-4 py-2 mt-2 w-full focus:outline-blue-300 focus:outline-2;
+      @apply border border-border rounded-md px-4 py-2 w-full focus:outline-blue-300 focus:outline-2;
     }
 </style>
 

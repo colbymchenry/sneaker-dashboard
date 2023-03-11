@@ -50,6 +50,7 @@
         {/each}
     </div>
 
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div class="signout-button" on:click={handleSignOut}>
         <span>Sign Out</span>
     </div>
