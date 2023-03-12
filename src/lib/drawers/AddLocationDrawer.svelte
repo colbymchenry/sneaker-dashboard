@@ -1,10 +1,7 @@
 <script lang="ts">
-    import { GoogleAPI } from "$lib/services/google";
-    import Button from "$lib/shared/Button.svelte";
     import Drawer from "$lib/shared/Drawer.svelte";
     import Form from "$lib/shared/Form.svelte";
     import Input from "$lib/shared/Input.svelte";
-    import Modal from "$lib/shared/Modal.svelte";
     import Select from "$lib/shared/Select.svelte";
     import states from "$lib/shared/states.json";
     import { googleStore } from "$lib/stores/google_store";

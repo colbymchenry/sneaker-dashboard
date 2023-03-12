@@ -10,6 +10,8 @@
     export let isOpen: boolean = false;
     export let store: any;
 
+    console.log(store);
+
     let form: any;
     let storeDetails: any;
     let storePhotos: string[];

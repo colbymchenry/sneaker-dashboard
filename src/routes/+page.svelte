@@ -1,6 +1,7 @@
 <script lang="ts">
     import Button from "$lib/shared/Button.svelte";
     import Drawer from "$lib/shared/Drawer.svelte";
+    import GoogleMap from "$lib/shared/GoogleMap.svelte";
     import Table from "$lib/shared/table/Table.svelte";
 
     const columns = [
@@ -19,3 +20,7 @@
 </script>
 
 <Table className="w-full" columns={columns} data={data} total={total} />
+
+<section class="mt-6 w-full h-[70vh]">
+  <GoogleMap className="w-full h-full"/>
+</section>
