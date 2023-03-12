@@ -4,16 +4,18 @@
     import Drawer from "$lib/shared/Drawer.svelte";
     import Form from "$lib/shared/Form.svelte";
     import Input from "$lib/shared/Input.svelte";
+    import Modal from "$lib/shared/Modal.svelte";
     import Select from "$lib/shared/Select.svelte";
     import states from "$lib/shared/states.json";
+    import { googleStore } from "$lib/stores/google_store";
     import { tick } from "svelte";
+    import AddDetailsModal from "./AddDetailsModal.svelte";
     import Location from "./Location.svelte";
 
     let form: any;
     let isOpen: boolean = false;
-
-    const apiKey = "AIzaSyBmoM2S5uCZve7XvVWnlvhWMH9IPjRhtfM";
-    const googleAPI = new GoogleAPI(apiKey);
+    let showDetailsModal: boolean = false;
+    let selectedStore: any;
 
     let nearbyStores: any[] = [];
     let city: string = "";
@@ -21,7 +23,7 @@
     const onSubmit = async (data: any) => {
         nearbyStores = [];
         await tick();
-        nearbyStores = await googleAPI.searchStores(data.address, city);
+        nearbyStores = await $googleStore.searchStores(data.address, city);
 
         // Calculate review count ratio for each restaurant
         nearbyStores.forEach((store) => {
@@ -78,7 +80,17 @@
 
     {#each nearbyStores || [] as store, index}
         {#key nearbyStores[index]}
-            <Location {store} />
+            <Location
+                {store}
+                on:add={() => {
+                    selectedStore = store;
+                    showDetailsModal = true;
+                }}
+            />
         {/key}
     {/each}
 </Drawer>
+
+{#if selectedStore && showDetailsModal}
+    <AddDetailsModal bind:isOpen={showDetailsModal} store={selectedStore} />
+{/if}

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 
     import Input from "$lib/shared/Input.svelte";
     import Button from "$lib/shared/Button.svelte";
@@ -7,7 +7,7 @@
     import {browser} from "$app/environment";
     import {goto} from "$app/navigation";
 
-    let form;
+    let form: any;
 
     function validateEmail() {
         if (!$form.values["email"]) {
@@ -29,7 +29,7 @@
         }
     }
 
-    async function onSubmit(formData) {
+    async function onSubmit(formData: any) {
         validateEmail();
         validatePassword();
 
@@ -38,7 +38,7 @@
             if (browser) {
                 await goto("/");
             }
-        } catch (error) {
+        } catch (error: any) {
             if (error.code === 'auth/wrong-password') {
                 $form.errors["password"] = 'Invalid password';
             } else if (error.code === 'auth/user-not-found') {

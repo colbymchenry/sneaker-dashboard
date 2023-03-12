@@ -1,12 +1,12 @@
 <script lang="ts">
     import Button from "$lib/shared/Button.svelte";
-    import { onMount } from "svelte";
-    import { register } from "swiper/element/bundle";
-    import "swiper/swiper-bundle.min.css";
+    import { createEventDispatcher, onMount } from "svelte";
 
     const DEFAULT_IMAGE = "https://via.placeholder.com/150";
 
     export let store: any;
+
+    const dispatch = createEventDispatcher();
 
     let images: string[] = [];
 
@@ -16,10 +16,6 @@
     } else {
         images = [DEFAULT_IMAGE];
     }
-
-    onMount(() => {
-        register();
-    });
 
     function drawChars(n: number, char: string): string {
         return Array(n).fill(char).join("");
@@ -52,13 +48,9 @@
     <div class="address">
         <span class="formatted-address">{store.formatted_address}</span>
         <div class="flex items-stretch">
-            <swiper-container>
-                {#each images as image}
-                    <swiper-slide>
-                        <img src={image} loading="lazy" />
-                    </swiper-slide>
-                {/each}
-            </swiper-container>
+            {#if images?.length}
+                <img src={images[0]} loading="lazy" alt="img" />
+            {/if}
         </div>
     </div>
     <div class="price-level">
@@ -69,6 +61,7 @@
     <Button
         className="!bg-blue-500 text-white absolute bottom-4 right-4 flex items-center justify-center shadow-md"
         style="width: 2rem;height: 2rem;padding: 0;border-radius: 100%;"
+        on:click={() => dispatch("add")}
     >
         <span class="material-icons">add</span>
     </Button>

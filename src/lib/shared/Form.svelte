@@ -7,6 +7,7 @@
     export let initialValues = {};
     export let validationSchema = {};
     export let onSubmit = () => {};
+    export let style = '';
 
     let values = initialValues;
     let errors = {};
@@ -82,6 +83,6 @@
     $: $form = {values, errors, submitted, disabled: Object.values(errors).find((e) => e?.length) !== undefined};
 </script>
 
-<form class={className} on:submit={handleSubmit}>
+<form class={className} {style} on:submit={handleSubmit}>
     <slot {handleInput} />
 </form>
