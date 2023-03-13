@@ -11,6 +11,7 @@ export interface IGoogleAPI {
   getStoreDetails(placeId: string): Promise<any>;
   getStorePhotos(placeId: string): Promise<string[]>;
   renderMap(element: HTMLElement): any;
+  filterMap(map: any): any;
 }
 
 export class GoogleAPI {
@@ -99,6 +100,44 @@ export class GoogleAPI {
     return new window.google.maps.Map(element, {
       center: myLatLng,
       zoom: 12,
+    });
+  }
+
+  public async filterMap(map: any) {
+    const maps = await this.loader.load();
+    const myLatLng = { lat: 37.7749, lng: -122.4194 }; // San Francisco coordinates
+    const service = new window.google.maps.places.PlacesService(map);
+
+    const request = {
+      location: myLatLng,
+      radius: 500,
+      type: ["shoe_store"]
+    };
+
+    const icon = {
+      url: "https://firebasestorage.googleapis.com/v0/b/superstar-brands.appspot.com/o/shoe.png?alt=media&token=f3f8444e-8e15-4cf7-ba0f-d07c7f1dfcba",
+      scaledSize: new window.google.maps.Size(40, 40),
+    };
+
+    service.nearbySearch(request, (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        for (let i = 0; i < results.length; i++) {
+          const place = results[i];
+          
+          // Filter out restaurants, parks, and grocery stores
+          if (place.types.indexOf("restaurant") !== -1 || place.types.indexOf("park") !== -1 || place.types.indexOf("grocery_or_supermarket") !== -1) {
+            continue;
+          }
+
+          console.log(place)
+
+          const marker = new window.google.maps.Marker({
+            position: place.geometry.location,
+            map: map,
+            icon: icon,
+          });
+        }
+      }
     });
   }
 

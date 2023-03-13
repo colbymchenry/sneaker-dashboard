@@ -8,7 +8,10 @@
     let map;
 
     function renderMap(node: HTMLElement) {
-        map = $googleStore.renderMap(node);
+        (async () => {
+            map = await $googleStore.renderMap(node);
+            await $googleStore.filterMap(map);
+        })();
     }
 </script>
 
