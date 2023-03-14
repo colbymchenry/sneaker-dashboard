@@ -1,5 +1,6 @@
 <script lang="ts">
     import Button from "$lib/shared/Button.svelte";
+    import { googleHomeMap } from "$lib/stores/google_store";
     import { createEventDispatcher, onMount } from "svelte";
 
     const DEFAULT_IMAGE = "https://via.placeholder.com/150";
@@ -34,9 +35,19 @@
             halfStar ? halfStarHTML : ""
         }${Array(emptyStars).fill(emptyStarHTML).join("")}`;
     }
+
+    function navigateHomeMap() {
+        const lat = store.geometry.location.lat();
+        const lng = store.geometry.location.lng();
+
+        if ($googleHomeMap) {
+            $googleHomeMap.setCenter({ lat: lat, lng: lng });
+        }
+    }
 </script>
 
-<div class="restaurant-info">
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div class="restaurant-info" on:click={navigateHomeMap}>
     <div class="name-and-rating">
         <h2 class="name">{store.name}</h2>
         <div class="rating">

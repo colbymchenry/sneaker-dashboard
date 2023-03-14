@@ -1,3 +1,5 @@
+import AddDetailsModal from '$lib/drawers/AddDetailsModal.svelte';
+import { modalStore } from '$lib/stores/modal_store';
 import { Loader } from '@googlemaps/js-api-loader';
 
 declare global {
@@ -100,45 +102,210 @@ export class GoogleAPI {
     return new window.google.maps.Map(element, {
       center: myLatLng,
       zoom: 12,
+      styles: [
+        {
+          "featureType": "water",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "color": "#a2daf2"
+            }
+          ]
+        },
+        {
+          "featureType": "landscape.man_made",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "color": "#f7f1df"
+            }
+          ]
+        },
+        {
+          "featureType": "landscape.natural",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "color": "#d0e3b4"
+            }
+          ]
+        },
+        {
+          "featureType": "road.highway",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "color": "#f7f1df"
+            }
+          ]
+        },
+        {
+          "featureType": "road.arterial",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "color": "#d0e3b4"
+            }
+          ]
+        },
+        {
+          "featureType": "road.local",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "color": "#d0e3b4"
+            }
+          ]
+        },
+        {
+          "featureType": "poi.park",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "color": "#a2daf2"
+            }
+          ]
+        },
+        {
+          "featureType": "poi",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "road",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "administrative",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "poi",
+          "elementType": "geometry",
+          "stylers": [
+            {
+              "color": "#e2e8f0"
+            }
+          ]
+        },
+        {
+          "featureType": "road.highway",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "road.arterial",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "water",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "landscape",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        }
+      ]
     });
   }
+
+
 
   public async filterMap(map: any) {
     const maps = await this.loader.load();
     const myLatLng = { lat: 37.7749, lng: -122.4194 }; // San Francisco coordinates
     const service = new window.google.maps.places.PlacesService(map);
 
-    const request = {
-      location: myLatLng,
-      radius: 500,
-      type: ["shoe_store"]
-    };
-
     const icon = {
       url: "https://firebasestorage.googleapis.com/v0/b/superstar-brands.appspot.com/o/shoe.png?alt=media&token=f3f8444e-8e15-4cf7-ba0f-d07c7f1dfcba",
-      scaledSize: new window.google.maps.Size(40, 40),
+      scaledSize: new window.google.maps.Size(60, 60),
     };
 
-    service.nearbySearch(request, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        for (let i = 0; i < results.length; i++) {
-          const place = results[i];
-          
-          // Filter out restaurants, parks, and grocery stores
-          if (place.types.indexOf("restaurant") !== -1 || place.types.indexOf("park") !== -1 || place.types.indexOf("grocery_or_supermarket") !== -1) {
-            continue;
+    function performSearch(request: any) {
+      service.nearbySearch(request, (results: any, status: any) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          for (let i = 0; i < results.length; i++) {
+            const place = results[i];
+
+            // Filter out restaurants, parks, and grocery stores
+            if (place.types.indexOf("restaurant") !== -1 || place.types.indexOf("park") !== -1 || place.types.indexOf("grocery_or_supermarket") !== -1) {
+              continue;
+            }
+
+            const marker = new window.google.maps.Marker({
+              position: place.geometry.location,
+              map: map,
+              icon: icon,
+            });
+
+            marker.addListener("click", () => {
+              modalStore.update((conf) => {
+                return [...conf, {
+                  component: AddDetailsModal,
+                  props: {
+                    isOpen: true,
+                    store: place
+                  }
+                }]
+              })
+            });
           }
-
-          console.log(place)
-
-          const marker = new window.google.maps.Marker({
-            position: place.geometry.location,
-            map: map,
-            icon: icon,
-          });
         }
-      }
+      });
+    }
+
+    performSearch({
+      location: myLatLng,
+      radius: 500,
+      keyword: ["Sneaker Store", "Thrift Store", "Resell Store", "Vintage Store"]
     });
+
+    map.addListener("dragend", () => {
+      // Get the new center of the map
+      const newCenter = map.getCenter();
+  
+      console.log(newCenter.lat())
+      // Run a nearby search with the updated request object
+      performSearch({
+        location: newCenter,
+        radius: 500,
+        keyword: ["Sneaker Store", "Thrift Store", "Resell Store", "Vintage Store"]
+      });
+    });
+
   }
 
 

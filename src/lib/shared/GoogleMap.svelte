@@ -5,7 +5,7 @@
     export let className: string = "";
     export let style: string = "";
 
-    let map;
+    export let map = undefined;
 
     function renderMap(node: HTMLElement) {
         (async () => {

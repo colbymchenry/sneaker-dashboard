@@ -1,5 +1,7 @@
 <!-- Modal.svelte -->
 <script lang="ts">
+    import { modalStore } from "$lib/stores/modal_store";
+    import { onDestroy } from "svelte";
     import Button from "./Button.svelte";
 
     export let isOpen = false;
@@ -9,6 +11,9 @@
 
     function closeModal() {
         isOpen = false;
+
+        $modalStore.pop();
+        $modalStore = $modalStore;
     }
 
     function cancel() {
@@ -21,6 +26,7 @@
         }
         closeModal();
     }
+
 </script>
 
 <div class="fixed z-10 inset-0 cc-container" class:isOpen>
